@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_app/constants/extension.dart';
-import 'package:frontend_app/data/repositories/auth/login_repositories.dart';
+import 'package:frontend_app/data/repositories/auth/login_repository.dart';
 import 'package:frontend_app/routes/route_names.dart';
 import 'package:get/get.dart';
 
@@ -11,6 +11,7 @@ class LoginController extends GetxController {
 
   TextEditingController eMailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  RxBool isRememberMe = false.obs;
 
   var isLoading = false.obs;
 
@@ -31,8 +32,8 @@ class LoginController extends GetxController {
     try {
       isLoading(true);
 
-      final isAuthenticated =
-          await loginRepository.authenticateUser(username, password);
+      final isAuthenticated = await loginRepository.authenticateUser(
+          username, password);
 
       if (isAuthenticated) {
         showSnackbar("Login Successfully");
@@ -41,7 +42,7 @@ class LoginController extends GetxController {
         showSnackbar("Invalid username or password!");
       }
     } catch (e) {
-      showSnackbar("Something went wrong!!");
+      showSnackbar("Something went wrong!! $e");
     } finally {
       isLoading(false);
     }

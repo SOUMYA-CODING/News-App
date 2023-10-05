@@ -6,7 +6,7 @@ class ENApi {
   static const String login = "auth/login/"; // POST
 
   // Registration
-  static const String registration = "auth/login/"; // POST
+  static const String registration = "auth/registration/"; // POST
 
   // Category
   static const String getAllCategory = "category/"; // GET

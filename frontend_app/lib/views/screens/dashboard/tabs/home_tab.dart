@@ -6,6 +6,7 @@ import 'package:frontend_app/controller/dashboard/tabs/home_tab_controller.dart'
 import 'package:frontend_app/routes/route_names.dart';
 import 'package:frontend_app/views/widgets/ads/banner_ad_card.dart';
 import 'package:frontend_app/views/widgets/card/big_news_card.dart';
+import 'package:frontend_app/views/widgets/card/breaking_news_card.dart';
 import 'package:frontend_app/views/widgets/card/small_news_card.dart';
 import 'package:frontend_app/views/widgets/common/custom_headline_view.dart';
 import 'package:frontend_app/views/widgets/common/custom_search_field.dart';
@@ -103,8 +104,8 @@ class _HomeTabState extends State<HomeTab> {
           SizedBox(height: 2.0.hp),
 
           // Breaking News
-          // const BreakingNewsCard(),
-          // SizedBox(height: 2.0.hp),
+          const BreakingNewsCard(),
+          SizedBox(height: 2.0.hp),
 
           // Featured News
           const CustomHeadlineView(

@@ -53,7 +53,7 @@ class LoginScreen extends StatelessWidget {
                 CustomTextField(
                   controller: loginController.passwordController,
                   hintText: "Password",
-                  obscureText: false,
+                  obscureText: true,
                   readOnly: false,
                   keyboardType: TextInputType.text,
                   prefixIcon:
@@ -68,7 +68,7 @@ class LoginScreen extends StatelessWidget {
                     Row(
                       children: [
                         Checkbox(
-                          value: false,
+                          value: loginController.isRememberMe.value,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),

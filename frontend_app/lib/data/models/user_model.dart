@@ -5,24 +5,20 @@ UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
 String userModelToJson(UserModel data) => json.encode(data.toJson());
 
 class UserModel {
-  String message;
   String accessToken;
   Data data;
 
   UserModel({
-    required this.message,
     required this.accessToken,
     required this.data,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        message: json["message"],
         accessToken: json["access_token"],
         data: Data.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "message": message,
         "access_token": accessToken,
         "data": data.toJson(),
       };

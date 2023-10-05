@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:frontend_app/config/app_preferences.dart';
 import 'package:frontend_app/constants/image_strings.dart';
 import 'package:frontend_app/routes/route_names.dart';
 import 'package:get/get.dart';
@@ -18,8 +19,21 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(
       const Duration(seconds: 3),
-      () => Get.offNamed(RouteName.onboardingScreen),
+      () => navigateUser(),
     );
+  }
+
+  Future<void> navigateUser() async {
+    final hasCompletedOnboarding = await AppPreferences.getOnboardingStatus();
+    final isLoggedIn = await AppPreferences.isLoggedIn();
+
+    if (!hasCompletedOnboarding) {
+      Get.offNamed(RouteName.onboardingScreen);
+    } else if (isLoggedIn) {
+      Get.offNamed(RouteName.dashboardScreen);
+    } else {
+      Get.offNamed(RouteName.loginScreen);
+    }
   }
 
   @override

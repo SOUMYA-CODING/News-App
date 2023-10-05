@@ -1,14 +1,18 @@
 import 'package:frontend_app/constants/api_constants.dart';
 import 'package:frontend_app/network/dio_client.dart';
 
-class LoginRepository {
+class RegistrationRepository {
   final DioClient dioClient = DioClient();
 
-  Future<bool> authenticateUser(String username, String password) async {
+  Future<bool> createUser(String firstName, String lastName, String email, String username, String password) async {
     try {
       final response = await dioClient.post(
-        "${ENApi.apiUrl}${ENApi.login}",
+        "${ENApi.apiUrl}${ENApi.registration}",
         data: {
+          "first_name": firstName,
+          "last_name": lastName,
+          "email": email,
+          "user_type": "regular",
           "username": username,
           "password": password,
         },

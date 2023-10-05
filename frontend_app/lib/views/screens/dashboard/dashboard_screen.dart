@@ -7,17 +7,20 @@ import 'package:frontend_app/constants/extension.dart';
 import 'package:frontend_app/controller/dashboard/dashboard_controller.dart';
 import 'package:get/get.dart';
 
-class DashboardTabScreen extends StatelessWidget {
+class DashboardTabScreen extends StatefulWidget {
   const DashboardTabScreen({super.key});
 
   @override
+  State<DashboardTabScreen> createState() => _DashboardTabScreenState();
+}
+
+class _DashboardTabScreenState extends State<DashboardTabScreen> {
+  final controller = Get.put(DashboardController());
+
+  @override
   Widget build(BuildContext context) {
-    final controller = Get.put(DashboardController());
-
-    bool isUserPremium = false;
-
     return Scaffold(
-      floatingActionButton: isUserPremium
+      floatingActionButton: controller.isPremium
           ? FloatingActionButton(
               backgroundColor: ENColors.primaryColor,
               onPressed: () {},
@@ -86,4 +89,3 @@ class DashboardTabScreen extends StatelessWidget {
     );
   }
 }
-//EdgeInsets.only(left: 3.6.wp, top: 2.6.hp, right: 3.6.wp),

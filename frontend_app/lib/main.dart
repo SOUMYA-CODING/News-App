@@ -6,10 +6,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
-  
+
   runApp(
     GetMaterialApp(
-      // theme: ThemeData(scaffoldBackgroundColor: ENColors.backgroundColor),
       debugShowCheckedModeBanner: true,
       getPages: AppRoute.routes,
     ),

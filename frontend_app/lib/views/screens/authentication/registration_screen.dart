@@ -2,6 +2,7 @@ import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_app/constants/colors.dart';
 import 'package:frontend_app/constants/extension.dart';
+import 'package:frontend_app/controller/auth/registartion_controller.dart';
 import 'package:frontend_app/routes/route_names.dart';
 import 'package:frontend_app/views/widgets/common/custom_button.dart';
 import 'package:frontend_app/views/widgets/common/custom_text_field.dart';
@@ -12,7 +13,7 @@ class RegistrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController email = TextEditingController();
+    final registrationController = Get.put(RegistrationController());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -43,10 +44,10 @@ class RegistrationScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     child: CustomTextField(
-                      controller: email,
+                      controller: registrationController.firstNameController,
                       obscureText: false,
                       readOnly: false,
-                      keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.text,
                       hintText: "First Name",
                       prefixIcon: const Icon(
                           FluentSystemIcons.ic_fluent_person_regular),
@@ -55,10 +56,10 @@ class RegistrationScreen extends StatelessWidget {
                   SizedBox(width: 2.0.wp),
                   Expanded(
                     child: CustomTextField(
-                      controller: email,
+                      controller: registrationController.lastNameController,
                       obscureText: false,
                       readOnly: false,
-                      keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.text,
                       hintText: "Last Name",
                       prefixIcon: const Icon(
                           FluentSystemIcons.ic_fluent_person_regular),
@@ -68,17 +69,17 @@ class RegistrationScreen extends StatelessWidget {
               ),
               SizedBox(height: 2.0.hp),
               CustomTextField(
-                controller: email,
+                controller: registrationController.usernameController,
                 obscureText: false,
                 readOnly: false,
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.text,
                 hintText: "Username",
                 prefixIcon:
                     const Icon(FluentSystemIcons.ic_fluent_person_regular),
               ),
               SizedBox(height: 2.0.hp),
               CustomTextField(
-                controller: email,
+                controller: registrationController.eMailController,
                 obscureText: false,
                 readOnly: false,
                 keyboardType: TextInputType.emailAddress,
@@ -88,20 +89,10 @@ class RegistrationScreen extends StatelessWidget {
               ),
               SizedBox(height: 2.0.hp),
               CustomTextField(
-                controller: email,
-                obscureText: false,
+                controller: registrationController.passwordController,
+                obscureText: true,
                 readOnly: false,
-                keyboardType: TextInputType.emailAddress,
-                hintText: "Phone Number",
-                prefixIcon:
-                    const Icon(FluentSystemIcons.ic_fluent_phone_regular),
-              ),
-              SizedBox(height: 2.0.hp),
-              CustomTextField(
-                controller: email,
-                obscureText: false,
-                readOnly: false,
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.text,
                 hintText: "Password",
                 prefixIcon:
                     const Icon(FluentSystemIcons.ic_fluent_lock_regular),
@@ -110,7 +101,7 @@ class RegistrationScreen extends StatelessWidget {
               Row(
                 children: [
                   Checkbox(
-                    value: false,
+                    value: registrationController.isChecked.value,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),

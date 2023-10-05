@@ -31,11 +31,12 @@ dependencies:
   intl: ^0.18.1
 
   # Shared Preferences
-  shared_preferences: ^2.2.0
+  shared_preferences: ^2.2.1
 
   # Environment
   flutter_dotenv: ^5.1.0
 
+  # Google AdMob
   google_mobile_ads: ^3.0.0
 
 dev_dependencies:
