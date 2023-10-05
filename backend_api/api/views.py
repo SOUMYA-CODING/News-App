@@ -30,7 +30,7 @@ def user_login(request):
         access_token = str(refresh.access_token)
 
         serializer = UserSerializer(user)
-        return Response({'message': 'User logged in successfully.', 'access_token': access_token, 'data': serializer.data,}, status=status.HTTP_200_OK)
+        return Response({'message': 'User logged in successfully.', 'access_token': access_token, 'data': serializer.data, }, status=status.HTTP_200_OK)
     else:
         return Response({'message': 'Invalid username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
 
