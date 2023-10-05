@@ -47,11 +47,20 @@ class DashboardTabScreen extends StatelessWidget {
             ),
             BottomNavigationBarItem(
               icon: Icon(
-                Icons.explore_outlined,
+                FluentSystemIcons.ic_fluent_search_regular,
               ),
-              label: 'Discover',
+              label: 'Explore',
               activeIcon: Icon(
-                Icons.explore,
+                FluentSystemIcons.ic_fluent_search_filled,
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                FluentSystemIcons.ic_fluent_bookmark_regular,
+              ),
+              label: 'Saved',
+              activeIcon: Icon(
+                FluentSystemIcons.ic_fluent_bookmark_filled,
               ),
             ),
             BottomNavigationBarItem(
@@ -68,11 +77,13 @@ class DashboardTabScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.only(left: 5.0.wp, top: 2.0.hp, right: 5.0.wp),
-          child:
-              Obx(() => controller.tabScreen[controller.currentTabIndex.value]),
+          padding: EdgeInsets.only(left: 3.6.wp, top: 2.6.hp, right: 3.6.wp),
+          child: Obx(
+            () => controller.tabScreen[controller.currentTabIndex.value],
+          ),
         ),
       ),
     );
   }
 }
+//EdgeInsets.only(left: 3.6.wp, top: 2.6.hp, right: 3.6.wp),

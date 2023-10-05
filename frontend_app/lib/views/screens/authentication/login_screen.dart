@@ -4,6 +4,7 @@ import 'package:frontend_app/constants/colors.dart';
 import 'package:frontend_app/constants/extension.dart';
 import 'package:frontend_app/constants/image_strings.dart';
 import 'package:frontend_app/constants/text_strings.dart';
+import 'package:frontend_app/controller/auth/login_controller.dart';
 import 'package:frontend_app/routes/route_names.dart';
 import 'package:frontend_app/views/widgets/common/custom_button.dart';
 import 'package:frontend_app/views/widgets/common/custom_text_field.dart';
@@ -14,8 +15,9 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController username = TextEditingController();
+    final loginController = Get.put(LoginController());
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(left: 5.0.wp, top: 6.0.hp, right: 5.0.wp),
@@ -39,19 +41,17 @@ class LoginScreen extends StatelessWidget {
                 const Text(ENText.loginHeadline),
                 SizedBox(height: 5.0.hp),
                 CustomTextField(
-                  controller: username,
+                  controller: loginController.eMailController,
                   hintText: "Username",
                   obscureText: false,
                   readOnly: false,
                   keyboardType: TextInputType.text,
-                  prefixIcon: const Icon(
-                    FluentSystemIcons.ic_fluent_mail_regular,
-                    color: Colors.black,
-                  ),
+                  prefixIcon:
+                      const Icon(FluentSystemIcons.ic_fluent_mail_regular),
                 ),
                 SizedBox(height: 2.0.hp),
                 CustomTextField(
-                  controller: username,
+                  controller: loginController.passwordController,
                   hintText: "Password",
                   obscureText: false,
                   readOnly: false,
@@ -90,16 +90,20 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(height: 5.0.hp),
                 CustomButton(
                   isOulined: false,
-                  onPressed: () {
-                    Get.offNamed(RouteName.dashboardScreen);
-                  },
-                  widget: Text(
-                    ENText.loginSignIn.toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  onPressed: () => loginController.authenticateUser(),
+                  widget: Obx(() {
+                    if (loginController.isLoading.value) {
+                      return const CircularProgressIndicator();
+                    } else {
+                      return Text(
+                        ENText.loginSignIn.toUpperCase(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    }
+                  }),
                 ),
                 SizedBox(height: 2.0.hp),
                 CustomButton(
@@ -108,7 +112,7 @@ class LoginScreen extends StatelessWidget {
                   widget: Text(
                     ENText.loginCreateAccount.toUpperCase(),
                     style: const TextStyle(
-                      color: Colors.black,
+                      color: Color.fromRGBO(0, 0, 0, 1),
                       fontWeight: FontWeight.bold,
                     ),
                   ),

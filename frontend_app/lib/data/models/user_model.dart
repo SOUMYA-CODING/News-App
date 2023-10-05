@@ -5,30 +5,30 @@ UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
 String userModelToJson(UserModel data) => json.encode(data.toJson());
 
 class UserModel {
-  bool status;
   String message;
-  List<Datum> data;
+  String accessToken;
+  Data data;
 
   UserModel({
-    required this.status,
     required this.message,
+    required this.accessToken,
     required this.data,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        status: json["status"],
         message: json["message"],
-        data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
+        accessToken: json["access_token"],
+        data: Data.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "status": status,
         "message": message,
-        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+        "access_token": accessToken,
+        "data": data.toJson(),
       };
 }
 
-class Datum {
+class Data {
   int id;
   String password;
   DateTime lastLogin;
@@ -40,14 +40,14 @@ class Datum {
   bool isStaff;
   bool isActive;
   DateTime dateJoined;
-  String phoneNumber;
+  dynamic phoneNumber;
   String userType;
-  String profilePicture;
+  dynamic profilePicture;
   bool isPremium;
   List<dynamic> groups;
   List<dynamic> userPermissions;
 
-  Datum({
+  Data({
     required this.id,
     required this.password,
     required this.lastLogin,
@@ -67,7 +67,7 @@ class Datum {
     required this.userPermissions,
   });
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
         id: json["id"],
         password: json["password"],
         lastLogin: DateTime.parse(json["last_login"]),

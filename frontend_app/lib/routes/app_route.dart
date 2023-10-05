@@ -20,33 +20,28 @@ class AppRoute {
     GetPage(
       name: RouteName.onboardingScreen,
       page: () => const OnboardingScreen(),
-      transition: Transition.rightToLeftWithFade,
     ),
 
     // Auth
     GetPage(
       name: RouteName.loginScreen,
       page: () => const LoginScreen(),
-      transition: Transition.rightToLeftWithFade,
     ),
 
     GetPage(
       name: RouteName.registrationScreen,
       page: () => const RegistrationScreen(),
-      transition: Transition.downToUp,
     ),
 
     GetPage(
       name: RouteName.passwordScreen,
       page: () => const PasswordResetScreen(),
-      transition: Transition.downToUp,
     ),
 
     // Dashboard
     GetPage(
       name: RouteName.dashboardScreen,
       page: () => const DashboardTabScreen(),
-      transition: Transition.rightToLeftWithFade,
     ),
   ];
 }

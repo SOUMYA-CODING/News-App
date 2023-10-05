@@ -1,6 +1,8 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend_app/constants/colors.dart';
 import 'package:frontend_app/constants/extension.dart';
+import 'package:frontend_app/routes/route_names.dart';
 import 'package:frontend_app/views/widgets/common/custom_button.dart';
 import 'package:frontend_app/views/widgets/common/custom_text_field.dart';
 import 'package:get/get.dart';
@@ -36,7 +38,7 @@ class RegistrationScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 5.0.hp),
+              SizedBox(height: 3.0.hp),
               Row(
                 children: [
                   Expanded(
@@ -50,6 +52,7 @@ class RegistrationScreen extends StatelessWidget {
                           FluentSystemIcons.ic_fluent_person_regular),
                     ),
                   ),
+                  SizedBox(width: 2.0.wp),
                   Expanded(
                     child: CustomTextField(
                       controller: email,
@@ -103,10 +106,54 @@ class RegistrationScreen extends StatelessWidget {
                 prefixIcon:
                     const Icon(FluentSystemIcons.ic_fluent_lock_regular),
               ),
+              SizedBox(height: 2.0.hp),
+              Row(
+                children: [
+                  Checkbox(
+                    value: false,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    onChanged: (value) {},
+                    activeColor: ENColors.primaryColor,
+                  ),
+                  const Text.rich(
+                    TextSpan(
+                      text: 'I agree to',
+                      children: [
+                        WidgetSpan(child: SizedBox(width: 2)),
+                        TextSpan(
+                          text: 'Privacy Policy',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.blue,
+                          ),
+                        ),
+                        WidgetSpan(child: SizedBox(width: 2)),
+                        TextSpan(
+                          text: 'and',
+                        ),
+                        WidgetSpan(child: SizedBox(width: 2)),
+                        TextSpan(
+                          text: 'Terms of use',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.blue,
+                          ),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+              SizedBox(height: 2.0.hp),
               CustomButton(
                 isOulined: false,
-                onPressed: () {},
-                widget: const Text("Send"),
+                onPressed: () => Get.offNamed(RouteName.loginScreen),
+                widget: const Text("Create Account"),
               ),
             ],
           ),
