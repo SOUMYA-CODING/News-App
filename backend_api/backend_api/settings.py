@@ -18,7 +18,7 @@ environ.Env.read_env()
 SECRET_KEY = 'django-insecure--#!oh0(#0+k!-8l)$q$nq7y2&d1a2)ci^ll-s2@gvcj&@uckom'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -108,7 +108,7 @@ WSGI_APPLICATION = 'backend_api.wsgi.application'
 # Database postgresql online
 
 DATABASES = {
-    "default": dj_database_url.parse('')
+    "default": dj_database_url.parse(env('DATABASE_URL'))
 }
 
 
