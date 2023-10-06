@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -147,6 +148,13 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+if not DEBUG:
+    STATICFILES_DIRS = [
+        BASE_DIR / 'static'
+    ]
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 # Media Files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
@@ -163,12 +171,12 @@ SITE_URL = "http://localhost:8000/"
 
 AUTH_USER_MODEL = 'core.User'
 
-PASSWORD_RESET_TIMEOUT=900 # 900 sec = 15 min
+PASSWORD_RESET_TIMEOUT = 900  # 900 sec = 15 min
 
 # Email
-EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST="smtp.gmail.com"
-EMAIL_PORT =587
-EMAIL_HOST_USER=os.environ.get('EMAIL_USER')
-EMAIL_HOST_PASSWORD=os.environ.get('EMAIL_PASS')
-EMAIL_USE_TLS=True
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS')
+EMAIL_USE_TLS = True
