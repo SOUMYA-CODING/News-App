@@ -6,7 +6,7 @@ import 'package:frontend_app/network/dio_client.dart';
 class LoginRepository {
   final DioClient dioClient = DioClient();
 
-  Future<bool> authenticateUser(
+  Future<Map<String, dynamic>> authenticateUser(
       String username, String password, bool rememberMe) async {
     try {
       final response = await dioClient.post(
@@ -24,12 +24,12 @@ class LoginRepository {
           await AppPreferences.saveUserData(userData);
           await AppPreferences.setLoggedIn(true);
         }
-        return true;
+        return {"success": true, "message": "${response.data["message"]}"};
       } else {
-        return false;
+        return {"success": false, "message": "${response.data["message"]}"};
       }
     } catch (e) {
-      return false;
+      return {"success": false, "message": "Something went wrong"};
     }
   }
 }

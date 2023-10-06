@@ -49,11 +49,11 @@ class RegistrationController extends GetxController {
       final isCreated = await registrationRepository.createUser(
           firstName, lastName, eMail, phoneNumber, username, password);
 
-      if (isCreated) {
-        showSnackbar("Registration Successfully");
+      if (isCreated["success"]) {
+        showSnackbar(isCreated["message"]);
         Get.offNamed(RouteName.dashboardScreen);
       } else {
-        showSnackbar("Please enter the data correcty!");
+        showSnackbar(isCreated["message"]);
       }
     } catch (e) {
       showSnackbar("Something went wrong!!");

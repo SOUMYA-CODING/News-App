@@ -35,11 +35,11 @@ class LoginController extends GetxController {
       final isAuthenticated = await loginRepository.authenticateUser(
           username, password, rememberMe.value);
 
-      if (isAuthenticated) {
-        showSnackbar("Login Successfully");
+      if (isAuthenticated["success"]) {
+        showSnackbar(isAuthenticated["message"]);
         Get.offNamed(RouteName.dashboardScreen);
       } else {
-        showSnackbar("Something went wrong!!");
+        showSnackbar(isAuthenticated["message"]);
       }
     } catch (e) {
       showSnackbar("Something went wrong!!");

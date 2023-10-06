@@ -6,7 +6,7 @@ import 'package:frontend_app/network/dio_client.dart';
 class RegistrationRepository {
   final DioClient dioClient = DioClient();
 
-  Future<bool> createUser(String firstName, String lastName, String email,
+  Future<Map<String, dynamic>> createUser(String firstName, String lastName, String email,
       String phoneNumber, String username, String password) async {
     try {
       final response = await dioClient.post(
@@ -23,16 +23,16 @@ class RegistrationRepository {
       );
 
       if (response.statusCode == 201) {
-        // print("response ${response.data}");
         final userData = UserModel.fromJson(response.data);
         await AppPreferences.saveUserData(userData);
-        // await AppPreferences.setLoggedIn(true);
-        return true;
+        await AppPreferences.setLoggedIn(true);
+
+        return {"success": true, "message": "${response.data["message"]}"};
       } else {
-        return false;
+        return {"success": false, "message": "${response.data["message"]}"};
       }
     } catch (e) {
-      return false;
+      return {"success": false, "message": "Something went wrong"};
     }
   }
 }
