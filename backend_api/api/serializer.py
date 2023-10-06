@@ -65,3 +65,24 @@ class SavedArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavedArticle
         fields = "__all__"
+
+
+class SendPasswordResetEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField(max_length=255)
+    class Meta:
+        fields = ['email']
+
+
+class UpdatePasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(required=True)
+    password2 = serializers.CharField(required=True)
+
+    def validate(self, data):
+        password = data.get('password')
+        password2 = data.get('password2')
+
+        # Check if both passwords match
+        if password != password2:
+            raise serializers.ValidationError("Passwords do not match")
+
+        return data

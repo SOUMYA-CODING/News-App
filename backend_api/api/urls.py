@@ -5,6 +5,8 @@ from . import views
 auth_patterns = [
     path('login/', views.user_login, name='auth-login'),
     path('registration/', views.user_registration, name='auth-registration'),
+    path('reset-password-link/', views.send_password_reset_email, name='auth-reset-password-link'),
+    path('update-user-password/<uid>/<token>/', views.update_user_password, name='auth-update-user-password'),
 ]
 
 # USER

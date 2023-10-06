@@ -10,8 +10,12 @@ from rest_framework.permissions import IsAuthenticated
 from core.models import User, Price, Subscription, Category, Article, Comment, LikeDislike, SavedArticle
 from .serializer import (
     UserSerializer, PriceSerializer, SubscriptionSerializer, CategorySerializer,
-    ArticleSerializer, CommentSerializer, LikeDislikeSerializer, SavedArticleSerializer
+    ArticleSerializer, CommentSerializer, LikeDislikeSerializer, SavedArticleSerializer, SendPasswordResetEmailSerializer, UpdatePasswordSerializer,
 )
+from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from . utils import Util
 
 # ----------------------------------------- AUTH -----------------------------------------
 
@@ -22,6 +26,9 @@ def user_login(request):
     username = request.data.get('username')
     password = request.data.get('password')
 
+    if not User.objects.filter(username=username).exists():
+        return Response({'message': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
     user = authenticate(request, username=username, password=password)
 
     if user is not None:
@@ -30,7 +37,7 @@ def user_login(request):
         access_token = str(refresh.access_token)
 
         serializer = UserSerializer(user)
-        return Response({'message': 'User logged in successfully.', 'access_token': access_token, 'data': serializer.data, }, status=status.HTTP_200_OK)
+        return Response({'message': 'Login successfully.', 'access_token': access_token, 'data': serializer.data, }, status=status.HTTP_200_OK)
     else:
         return Response({'message': 'Invalid username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -61,9 +68,64 @@ def user_registration(request):
 
         serializer = UserSerializer(user)
 
-        return Response({'message': 'User registered successfully.', 'access_token': access_token, 'data': serializer.data, }, status=status.HTTP_201_CREATED)
+        return Response({'message': 'Registration successfully.', 'access_token': access_token, 'data': serializer.data, }, status=status.HTTP_201_CREATED)
     except IntegrityError:
-        return Response({'message': 'An error occurred while registering the user.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'message': 'Please fill all the fileds'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# USER PASSWORD RESET LINK
+@api_view(['POST'])
+def send_password_reset_email(request):
+    serializer = SendPasswordResetEmailSerializer(data=request.data)
+    if serializer.is_valid():
+        email = serializer.validated_data.get('email')
+
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email=email)
+            uid = urlsafe_base64_encode(force_bytes(user.id))
+            token = PasswordResetTokenGenerator().make_token(user)
+            link = 'https://localhost:8000/api/user/reset/'+uid+'/'+token
+
+            body = "Click on the link"+link
+            data = {
+                "subject": "Reset your password",
+                "body": body,
+                "to_email": user.email,
+            }
+
+            Util.send_email(data)
+
+            return Response({'message': 'Password reset link sent. Please check your email'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'Your are not a user'}, status=status.HTTP_404_NOT_FOUND)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# USER PASSWORD RESET
+@api_view(['POST'])
+def update_user_password(request, uid, token):
+    try:
+        user_id = urlsafe_base64_decode(uid).decode()
+        user = User.objects.get(id=user_id)
+
+        if not PasswordResetTokenGenerator().check_token(user, token):
+            return Response({'message': 'Invalid or expired token.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        serializer = UpdatePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            password = serializer.validated_data.get('password')
+            user.set_password(password)
+            user.save()
+            return Response({'message': 'Password updated successfully.'}, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    except DjangoUnicodeDecodeError:
+        return Response({'message': 'Invalid UID.'}, status=status.HTTP_400_BAD_REQUEST)
+    except User.DoesNotExist:
+        return Response({'message': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        return Response({'message': 'An error occurred while updating the password.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # ----------------------------------------- USER -----------------------------------------
