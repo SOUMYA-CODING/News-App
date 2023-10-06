@@ -84,9 +84,9 @@ def send_password_reset_email(request):
             user = User.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
-            link = 'https://localhost:8000/api/user/reset/'+uid+'/'+token
+            link = 'https://news-backend-api.onrender.com/api/user/reset/'+uid+'/'+token
 
-            body = "Click on the link"+link
+            body = "Click on the link : "+link
             data = {
                 "subject": "Reset your password",
                 "body": body,
