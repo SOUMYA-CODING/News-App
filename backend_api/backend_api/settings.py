@@ -18,7 +18,7 @@ environ.Env.read_env()
 SECRET_KEY = 'django-insecure--#!oh0(#0+k!-8l)$q$nq7y2&d1a2)ci^ll-s2@gvcj&@uckom'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 
     # Swagger
     'drf_yasg',
-    
+
     # Apps
     'core',
     'api',
@@ -92,24 +92,23 @@ SIMPLE_JWT = {
 WSGI_APPLICATION = 'backend_api.wsgi.application'
 
 
-# Database postgresql local
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "NewsDB",
-#         "USER": "postgres",
-#         "PASSWORD": "8249",
-#         "HOST": "localhost",
-#         "PORT": "5432",
-#     }
-# }
-
-# Database postgresql online
-
-DATABASES = {
-    "default": dj_database_url.parse(env('DATABASE_URL'))
-}
+if DEBUG:
+    # Database postgresql local
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": "NewsDB",
+            "USER": "postgres",
+            "PASSWORD": "8249",
+            "HOST": "localhost",
+            "PORT": "5432",
+        }
+    }
+else:
+    # Database postgresql online
+    DATABASES = {
+        "default": dj_database_url.parse(env('DATABASE_URL'))
+    }
 
 
 # Password validation
