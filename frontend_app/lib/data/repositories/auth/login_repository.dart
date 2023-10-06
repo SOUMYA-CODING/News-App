@@ -6,7 +6,8 @@ import 'package:frontend_app/network/dio_client.dart';
 class LoginRepository {
   final DioClient dioClient = DioClient();
 
-  Future<bool> authenticateUser(String username, String password) async {
+  Future<bool> authenticateUser(
+      String username, String password, bool rememberMe) async {
     try {
       final response = await dioClient.post(
         "${ENApi.apiUrl}${ENApi.login}",
@@ -16,18 +17,13 @@ class LoginRepository {
         },
       );
 
-      print(response.data);
-
       if (response.statusCode == 200) {
-        final accessToken = response.data["access_token"] as String;
-        print("Access token: $accessToken");
-        final userData = response.data["data"];
-        print("Access token: $accessToken | userData : $userData");
+        final userData = UserModel.fromJson(response.data);
 
-        await AppPreferences.saveAccessToken(accessToken);
-        await AppPreferences.saveUserData(userData);
-        await AppPreferences.setLoggedIn(true);
-
+        if (rememberMe) {
+          await AppPreferences.saveUserData(userData);
+          await AppPreferences.setLoggedIn(true);
+        }
         return true;
       } else {
         return false;

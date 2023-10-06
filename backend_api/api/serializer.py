@@ -5,7 +5,18 @@ from core.models import User, Price, Subscription, Category, Article, Comment, L
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'phone_number',
+            'username',
+            'password',
+            'user_type',
+            'profile_picture',
+            'is_premium',
+        ]
 
 
 class PriceSerializer(serializers.ModelSerializer):
@@ -26,6 +37,7 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = "__all__"
+
 
 class ArticleSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
@@ -53,5 +65,3 @@ class SavedArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = SavedArticle
         fields = "__all__"
-
-

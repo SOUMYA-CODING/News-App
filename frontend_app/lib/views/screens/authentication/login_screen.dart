@@ -10,12 +10,18 @@ import 'package:frontend_app/views/widgets/common/custom_button.dart';
 import 'package:frontend_app/views/widgets/common/custom_text_field.dart';
 import 'package:get/get.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final loginController = Get.put(LoginController());
+
+  @override
   Widget build(BuildContext context) {
-    final loginController = Get.put(LoginController());
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -68,11 +74,15 @@ class LoginScreen extends StatelessWidget {
                     Row(
                       children: [
                         Checkbox(
-                          value: loginController.isRememberMe.value,
+                          value: loginController.rememberMe.value,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          onChanged: (value) {},
+                          onChanged: (bool? value) {
+                            setState(() {
+                              loginController.rememberMe.value = value!;
+                            });
+                          },
                           activeColor: ENColors.primaryColor,
                         ),
                         const Text(ENText.loginRememberMe),
@@ -93,7 +103,8 @@ class LoginScreen extends StatelessWidget {
                   onPressed: () => loginController.authenticateUser(),
                   widget: Obx(() {
                     if (loginController.isLoading.value) {
-                      return const CircularProgressIndicator();
+                      return const CircularProgressIndicator(
+                          color: Colors.white);
                     } else {
                       return Text(
                         ENText.loginSignIn.toUpperCase(),

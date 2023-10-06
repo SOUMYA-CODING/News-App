@@ -28,6 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
     final isLoggedIn = await AppPreferences.isLoggedIn();
 
     if (!hasCompletedOnboarding) {
+      await AppPreferences.saveOnboardingStatus(true);
       Get.offNamed(RouteName.onboardingScreen);
     } else if (isLoggedIn) {
       Get.offNamed(RouteName.dashboardScreen);

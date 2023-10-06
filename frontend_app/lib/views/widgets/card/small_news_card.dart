@@ -11,23 +11,22 @@ class SmallNewsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       child: Container(
-        padding: EdgeInsets.all(3.0.wp),
         margin: EdgeInsets.only(bottom: 2.0.hp),
         width: double.infinity,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          // border: Border.all(width: 1, color: Colors.grey.shade400),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade300,
-              blurRadius: 7,
-              offset: const Offset(0, 7),
-            ),
-          ],
-        ),
         child: Row(
           children: [
+            Expanded(
+              flex: 1,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  "https://akm-img-a-in.tosshub.com/aajtak/images/story/202310/untitled_design_98-sixteen_nine.png?size=948:533",
+                  fit: BoxFit.cover,
+                  height: 100,
+                ),
+              ),
+            ),
+            SizedBox(width: 2.0.wp),
             Expanded(
               flex: 2,
               child: Column(
@@ -37,8 +36,9 @@ class SmallNewsCard extends StatelessWidget {
                   SizedBox(height: 2.0.hp),
                   Text(
                     "Data breakdown: How to Ride Dips sdasdasdasdasdasdasdasdasdasdasdasda",
+                    textAlign: TextAlign.justify,
                     style: TextStyle(
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w800,
                       fontSize: 12.0.sp,
                     ),
                     maxLines: 2,
@@ -56,18 +56,6 @@ class SmallNewsCard extends StatelessWidget {
                     ],
                   ),
                 ],
-              ),
-            ),
-            SizedBox(width: 2.0.wp),
-            Expanded(
-              flex: 1,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  "https://akm-img-a-in.tosshub.com/aajtak/images/story/202310/untitled_design_98-sixteen_nine.png?size=948:533",
-                  fit: BoxFit.cover,
-                  height: 100,
-                ),
               ),
             ),
           ],

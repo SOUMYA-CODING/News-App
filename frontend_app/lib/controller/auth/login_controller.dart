@@ -11,7 +11,7 @@ class LoginController extends GetxController {
 
   TextEditingController eMailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  RxBool isRememberMe = false.obs;
+  RxBool rememberMe = false.obs;
 
   var isLoading = false.obs;
 
@@ -33,16 +33,16 @@ class LoginController extends GetxController {
       isLoading(true);
 
       final isAuthenticated = await loginRepository.authenticateUser(
-          username, password);
+          username, password, rememberMe.value);
 
       if (isAuthenticated) {
         showSnackbar("Login Successfully");
         Get.offNamed(RouteName.dashboardScreen);
       } else {
-        showSnackbar("Invalid username or password!");
+        showSnackbar("Something went wrong!!");
       }
     } catch (e) {
-      showSnackbar("Something went wrong!! $e");
+      showSnackbar("Something went wrong!!");
     } finally {
       isLoading(false);
     }

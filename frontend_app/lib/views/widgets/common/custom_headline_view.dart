@@ -20,7 +20,7 @@ class CustomHeadlineView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13.0.sp),
+          style: TextStyle(fontWeight: FontWeight.w700, fontSize: 16.0.sp),
         ),
         InkWell(
           onTap: () => Get.toNamed(routePath),

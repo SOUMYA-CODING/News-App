@@ -3,18 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:frontend_app/constants/colors.dart';
 import 'package:frontend_app/constants/extension.dart';
 import 'package:frontend_app/controller/auth/registartion_controller.dart';
-import 'package:frontend_app/routes/route_names.dart';
 import 'package:frontend_app/views/widgets/common/custom_button.dart';
 import 'package:frontend_app/views/widgets/common/custom_text_field.dart';
 import 'package:get/get.dart';
 
-class RegistrationScreen extends StatelessWidget {
+class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
 
   @override
+  State<RegistrationScreen> createState() => _RegistrationScreenState();
+}
+
+class _RegistrationScreenState extends State<RegistrationScreen> {
+  final registrationController = Get.put(RegistrationController());
+
+  @override
   Widget build(BuildContext context) {
-    final registrationController = Get.put(RegistrationController());
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -89,6 +95,16 @@ class RegistrationScreen extends StatelessWidget {
               ),
               SizedBox(height: 2.0.hp),
               CustomTextField(
+                controller: registrationController.phoneNumberController,
+                obscureText: false,
+                readOnly: false,
+                keyboardType: TextInputType.phone,
+                hintText: "Phone Number",
+                prefixIcon:
+                    const Icon(FluentSystemIcons.ic_fluent_phone_regular),
+              ),
+              SizedBox(height: 2.0.hp),
+              CustomTextField(
                 controller: registrationController.passwordController,
                 obscureText: true,
                 readOnly: false,
@@ -105,7 +121,11 @@ class RegistrationScreen extends StatelessWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    onChanged: (value) {},
+                    onChanged: (bool? value) {
+                      setState(() {
+                        registrationController.isChecked.value = value!;
+                      });
+                    },
                     activeColor: ENColors.primaryColor,
                   ),
                   const Text.rich(
@@ -143,8 +163,20 @@ class RegistrationScreen extends StatelessWidget {
               SizedBox(height: 2.0.hp),
               CustomButton(
                 isOulined: false,
-                onPressed: () => Get.offNamed(RouteName.loginScreen),
-                widget: const Text("Create Account"),
+                onPressed: () => registrationController.registernewUser(),
+                widget: Obx(() {
+                  if (registrationController.isLoading.value) {
+                    return const CircularProgressIndicator(color: Colors.white);
+                  } else {
+                    return Text(
+                      "Create account".toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  }
+                }),
               ),
             ],
           ),

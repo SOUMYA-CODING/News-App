@@ -22,7 +22,7 @@ class HomeHeader extends StatelessWidget {
               style: TextStyle(
                 color: ENColors.primaryColor,
                 fontWeight: FontWeight.w600,
-                fontSize: 16.0.sp,
+                fontSize: 18.0.sp,
               ),
             ),
             Text(HomeTabController.instance.formattedDate.value),

@@ -41,23 +41,29 @@ def user_registration(request):
     first_name = request.data.get('first_name')
     last_name = request.data.get('last_name')
     email = request.data.get('email')
+    phone_number = request.data.get('phone_number')
     user_type = request.data.get('user_type')
     profile_picture = request.data.get('profile_picture')
 
     username = request.data.get('username')
     password = request.data.get('password')
 
+    if User.objects.filter(email=email).exists() or User.objects.filter(username=username).exists():
+        return Response({'message': 'User with this email or username already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
-        user = User.objects.create_user(first_name=first_name, last_name=last_name, email=email,
+        user = User.objects.create_user(first_name=first_name, last_name=last_name, email=email, phone_number=phone_number,
                                         user_type=user_type, profile_picture=profile_picture, username=username, password=password)
         user.save()
 
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
 
-        return Response({'message': 'User registered successfully.', 'access_token': access_token}, status=status.HTTP_201_CREATED)
+        serializer = UserSerializer(user)
+
+        return Response({'message': 'User registered successfully.', 'access_token': access_token, 'data': serializer.data, }, status=status.HTTP_201_CREATED)
     except IntegrityError:
-        return Response({'message': 'Username or email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'message': 'An error occurred while registering the user.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # ----------------------------------------- USER -----------------------------------------

@@ -1,3 +1,4 @@
+import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_app/helper/ad_helper.dart';
@@ -9,7 +10,7 @@ import 'package:frontend_app/views/widgets/card/big_news_card.dart';
 import 'package:frontend_app/views/widgets/card/breaking_news_card.dart';
 import 'package:frontend_app/views/widgets/card/small_news_card.dart';
 import 'package:frontend_app/views/widgets/common/custom_headline_view.dart';
-import 'package:frontend_app/views/widgets/common/custom_search_field.dart';
+import 'package:frontend_app/views/widgets/common/custom_text_field.dart';
 import 'package:frontend_app/views/widgets/headers/home_header.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -100,7 +101,17 @@ class _HomeTabState extends State<HomeTab> {
           SizedBox(height: 3.0.hp),
 
           // Search Field
-          CustomSearchField(ct: ct),
+          CustomTextField(
+            controller: ct,
+            obscureText: false,
+            readOnly: false,
+            keyboardType: TextInputType.text,
+            hintText: "Search articles",
+            prefixIcon: const Icon(
+              FluentSystemIcons.ic_fluent_search_filled,
+              color: Colors.grey,
+            ),
+          ),
           SizedBox(height: 2.0.hp),
 
           // Breaking News
@@ -110,7 +121,7 @@ class _HomeTabState extends State<HomeTab> {
           // Featured News
           const CustomHeadlineView(
               title: "Featured", routePath: RouteName.loginScreen),
-          SizedBox(height: 1.0.hp),
+          SizedBox(height: 2.0.hp),
           SizedBox(
             width: double.infinity,
             height: 255,
@@ -121,14 +132,13 @@ class _HomeTabState extends State<HomeTab> {
               itemBuilder: (context, index) => const BigNewsCard(),
             ),
           ),
-          SizedBox(height: 3.0.hp),
 
           if (smallBannerAd != null) BannerAdsCard(bannerAd: smallBannerAd),
 
           // Trending News
           const CustomHeadlineView(
               title: "Trending", routePath: RouteName.loginScreen),
-          SizedBox(height: 1.0.hp),
+          SizedBox(height: 2.0.hp),
           Column(
             children: List.generate(
               4,
@@ -140,7 +150,7 @@ class _HomeTabState extends State<HomeTab> {
           // Recent News
           const CustomHeadlineView(
               title: "Recent", routePath: RouteName.loginScreen),
-          SizedBox(height: 1.0.hp),
+          SizedBox(height: 2.0.hp),
           Column(
             children: [
               for (int index = 0; index < numberOfArticles; index++)

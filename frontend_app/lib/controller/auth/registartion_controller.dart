@@ -13,6 +13,7 @@ class RegistrationController extends GetxController {
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController eMailController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   RxBool isChecked = false.obs;
@@ -27,15 +28,16 @@ class RegistrationController extends GetxController {
     final firstName = firstNameController.text.trim();
     final lastName = lastNameController.text.trim();
     final eMail = eMailController.text.trim();
+    final phoneNumber = phoneNumberController.text.trim();
     final username = usernameController.text.trim();
     final password = passwordController.text.trim();
 
     // Validate
     if (firstName.isEmpty ||
-        lastName.isEmpty ||
         eMail.isEmpty ||
+        phoneNumber.isEmpty ||
         username.isEmpty ||
-        password.isEmpty || 
+        password.isEmpty ||
         !isChecked.value) {
       showSnackbar("Please fill in all fields.");
       return;
@@ -44,11 +46,11 @@ class RegistrationController extends GetxController {
     try {
       isLoading(true);
 
-      final isAuthenticated = await registrationRepository.createUser(
-          firstName, lastName, eMail, username, password);
+      final isCreated = await registrationRepository.createUser(
+          firstName, lastName, eMail, phoneNumber, username, password);
 
-      if (isAuthenticated) {
-        showSnackbar("Login Successfully");
+      if (isCreated) {
+        showSnackbar("Registration Successfully");
         Get.offNamed(RouteName.dashboardScreen);
       } else {
         showSnackbar("Please enter the data correcty!");

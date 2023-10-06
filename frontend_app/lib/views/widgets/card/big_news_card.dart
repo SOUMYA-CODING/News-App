@@ -13,20 +13,7 @@ class BigNewsCard extends StatelessWidget {
       onTap: () {},
       child: Container(
         margin: EdgeInsets.only(right: 3.0.wp),
-        padding: EdgeInsets.all(3.0.wp),
         width: 250,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          // border: Border.all(width: 1, color: Colors.grey.shade400),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.shade300,
-              blurRadius: 7,
-              offset: const Offset(0, 7),
-            ),
-          ],
-        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -59,7 +46,7 @@ class BigNewsCard extends StatelessWidget {
             Text(
               "Data breakdown: How to Ride Dips sdasdasdasdasdasdasdasdasdasdasdasdasdasdsadadasdadadasdasdasdasdasdasdasdasdasdasdasdasdas",
               style: TextStyle(
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w800,
                 fontSize: 12.0.sp,
               ),
               maxLines: 2,

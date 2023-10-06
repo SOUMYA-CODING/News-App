@@ -1,9 +1,14 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+import dj_database_url
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+env = environ.Env()
+environ.Env.read_env()
 
 
 # Quick-start development settings - unsuitable for production
@@ -89,29 +94,22 @@ WSGI_APPLICATION = 'backend_api.wsgi.application'
 
 # Database postgresql local
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "NewsDB",
-        "USER": "postgres",
-        "PASSWORD": "8249",
-        "HOST": "localhost",
-        "PORT": "5432",
-    }
-}
-
-# Database postgresql online
-
 # DATABASES = {
 #     "default": {
 #         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "mydatabase",
-#         "USER": "mydatabaseuser",
-#         "PASSWORD": "mypassword",
-#         "HOST": "127.0.0.1",
+#         "NAME": "NewsDB",
+#         "USER": "postgres",
+#         "PASSWORD": "8249",
+#         "HOST": "localhost",
 #         "PORT": "5432",
 #     }
 # }
+
+# Database postgresql online
+
+DATABASES = {
+    "default": dj_database_url.parse('')
+}
 
 
 # Password validation
