@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure--#!oh0(#0+k!-8l)$q$nq7y2&d1a2)ci^ll-s2@gvcj&@uckom
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.vercel.app']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -87,15 +87,31 @@ SIMPLE_JWT = {
 WSGI_APPLICATION = 'backend_api.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+# Database postgresql local
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "NewsDB",
+        "USER": "postgres",
+        "PASSWORD": "8249",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
+
+# Database postgresql online
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "mydatabase",
+#         "USER": "mydatabaseuser",
+#         "PASSWORD": "mypassword",
+#         "HOST": "127.0.0.1",
+#         "PORT": "5432",
+#     }
+# }
 
 
 # Password validation
