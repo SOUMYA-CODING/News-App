@@ -1,6 +1,7 @@
 import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_app/constants/extension.dart';
+import 'package:frontend_app/controller/auth/password_reset_controller.dart';
 import 'package:frontend_app/views/widgets/common/custom_button.dart';
 import 'package:frontend_app/views/widgets/common/custom_text_field.dart';
 import 'package:get/get.dart';
@@ -10,8 +11,9 @@ class PasswordResetScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController email = TextEditingController();
+    final passwordResetController = Get.put(PasswordResetController());
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -41,7 +43,7 @@ class PasswordResetScreen extends StatelessWidget {
                   "Don't worry sometimes people can forget too, enter your email and we will send you a password reset link"),
               SizedBox(height: 3.0.hp),
               CustomTextField(
-                controller: email,
+                controller: passwordResetController.eMailController,
                 obscureText: false,
                 readOnly: false,
                 keyboardType: TextInputType.emailAddress,
@@ -52,8 +54,20 @@ class PasswordResetScreen extends StatelessWidget {
               SizedBox(height: 2.0.hp),
               CustomButton(
                 isOulined: false,
-                onPressed: () {},
-                widget: const Text("Send"),
+                onPressed: () => passwordResetController.resetPassword(),
+                widget: Obx(() {
+                  if (passwordResetController.isLoading.value) {
+                    return const CircularProgressIndicator(color: Colors.white);
+                  } else {
+                    return Text(
+                      "Send".toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  }
+                }),
               ),
             ],
           ),

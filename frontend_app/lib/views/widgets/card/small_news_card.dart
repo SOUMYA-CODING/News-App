@@ -12,6 +12,11 @@ class SmallNewsCard extends StatelessWidget {
     return InkWell(
       child: Container(
         margin: EdgeInsets.only(bottom: 2.0.hp),
+        padding: EdgeInsets.all(3.0.wp),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(10),
+        ),
         width: double.infinity,
         child: Row(
           children: [

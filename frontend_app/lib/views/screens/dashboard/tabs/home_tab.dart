@@ -1,4 +1,3 @@
-import 'package:fluentui_icons/fluentui_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend_app/helper/ad_helper.dart';
@@ -10,7 +9,6 @@ import 'package:frontend_app/views/widgets/card/big_news_card.dart';
 import 'package:frontend_app/views/widgets/card/breaking_news_card.dart';
 import 'package:frontend_app/views/widgets/card/small_news_card.dart';
 import 'package:frontend_app/views/widgets/common/custom_headline_view.dart';
-import 'package:frontend_app/views/widgets/common/custom_text_field.dart';
 import 'package:frontend_app/views/widgets/headers/home_header.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -101,18 +99,18 @@ class _HomeTabState extends State<HomeTab> {
           SizedBox(height: 3.0.hp),
 
           // Search Field
-          CustomTextField(
-            controller: ct,
-            obscureText: false,
-            readOnly: false,
-            keyboardType: TextInputType.text,
-            hintText: "Search articles",
-            prefixIcon: const Icon(
-              FluentSystemIcons.ic_fluent_search_filled,
-              color: Colors.grey,
-            ),
-          ),
-          SizedBox(height: 2.0.hp),
+          // CustomTextField(
+          //   controller: ct,
+          //   obscureText: false,
+          //   readOnly: false,
+          //   keyboardType: TextInputType.text,
+          //   hintText: "Search articles",
+          //   prefixIcon: const Icon(
+          //     FluentSystemIcons.ic_fluent_search_filled,
+          //     color: Colors.grey,
+          //   ),
+          // ),
+          // SizedBox(height: 2.0.hp),
 
           // Breaking News
           const BreakingNewsCard(),
