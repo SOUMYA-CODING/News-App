@@ -6,8 +6,10 @@ class DioClient {
   late Dio dio;
 
   DioClient() {
+    String baseUrl = kReleaseMode ? ENApi.prodBaseApiUrl : ENApi.debugBaseApiUrl;
+
     BaseOptions options = BaseOptions(
-      baseUrl: ENApi.apiUrl,
+      baseUrl: baseUrl,
       headers: {
         'Content-Type': 'application/json',
       },

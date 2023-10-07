@@ -6,24 +6,24 @@ String userModelToJson(UserModel data) => json.encode(data.toJson());
 
 class UserModel {
     String message;
-    String accessToken;
+    Tokens tokens;
     Data data;
 
     UserModel({
         required this.message,
-        required this.accessToken,
+        required this.tokens,
         required this.data,
     });
 
     factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         message: json["message"],
-        accessToken: json["access_token"],
+        tokens: Tokens.fromJson(json["tokens"]),
         data: Data.fromJson(json["data"]),
     );
 
     Map<String, dynamic> toJson() => {
         "message": message,
-        "access_token": accessToken,
+        "tokens": tokens.toJson(),
         "data": data.toJson(),
     };
 }
@@ -62,7 +62,7 @@ class Data {
         username: json["username"],
         password: json["password"],
         userType: json["user_type"],
-        profilePicture: json["profile_picture"] ?? "",
+        profilePicture: json["profile_picture"],
         isPremium: json["is_premium"],
     );
 
@@ -77,5 +77,25 @@ class Data {
         "user_type": userType,
         "profile_picture": profilePicture,
         "is_premium": isPremium,
+    };
+}
+
+class Tokens {
+    String accessToken;
+    String refreshToken;
+
+    Tokens({
+        required this.accessToken,
+        required this.refreshToken,
+    });
+
+    factory Tokens.fromJson(Map<String, dynamic> json) => Tokens(
+        accessToken: json["access_token"],
+        refreshToken: json["refresh_token"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "access_token": accessToken,
+        "refresh_token": refreshToken,
     };
 }

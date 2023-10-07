@@ -30,8 +30,8 @@ dependencies:
   # Date Formate
   intl: ^0.18.1
 
-  # Shared Preferences
-  shared_preferences: ^2.2.1
+  # Flutter Secure Storage
+  flutter_secure_storage: ^9.0.0
 
   # Environment
   flutter_dotenv: ^5.1.0

@@ -1,7 +1,7 @@
 import 'package:frontend_app/config/app_preferences.dart';
 import 'package:frontend_app/constants/api_constants.dart';
 import 'package:frontend_app/data/models/user_model.dart';
-import 'package:frontend_app/network/dio_client.dart';
+import 'package:frontend_app/dio/dio_client.dart';
 
 class LoginRepository {
   final DioClient dioClient = DioClient();
@@ -10,7 +10,7 @@ class LoginRepository {
       String username, String password, bool rememberMe) async {
     try {
       final response = await dioClient.post(
-        "${ENApi.apiUrl}${ENApi.login}",
+        ENApi.login,
         data: {
           "username": username,
           "password": password,

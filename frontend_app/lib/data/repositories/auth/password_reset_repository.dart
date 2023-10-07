@@ -1,5 +1,5 @@
 import 'package:frontend_app/constants/api_constants.dart';
-import 'package:frontend_app/network/dio_client.dart';
+import 'package:frontend_app/dio/dio_client.dart';
 
 class PasswordResetRepository {
   final DioClient dioClient = DioClient();
@@ -7,7 +7,7 @@ class PasswordResetRepository {
   Future<Map<String, dynamic>> sendPasswordResetLink(String email) async {
     try {
       final response = await dioClient.post(
-        "${ENApi.apiUrl}${ENApi.passwordReset}",
+        ENApi.passwordReset,
         data: {
           "email": email,
         },

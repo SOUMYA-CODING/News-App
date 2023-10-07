@@ -1,16 +1,21 @@
 import 'package:frontend_app/config/app_preferences.dart';
 import 'package:frontend_app/constants/api_constants.dart';
 import 'package:frontend_app/data/models/user_model.dart';
-import 'package:frontend_app/network/dio_client.dart';
+import 'package:frontend_app/dio/dio_client.dart';
 
 class RegistrationRepository {
   final DioClient dioClient = DioClient();
 
-  Future<Map<String, dynamic>> createUser(String firstName, String lastName, String email,
-      String phoneNumber, String username, String password) async {
+  Future<Map<String, dynamic>> createUser(
+      String firstName,
+      String lastName,
+      String email,
+      String phoneNumber,
+      String username,
+      String password) async {
     try {
       final response = await dioClient.post(
-        "${ENApi.apiUrl}${ENApi.registration}",
+        ENApi.registration,
         data: {
           "first_name": firstName,
           "last_name": lastName,

@@ -1,6 +1,7 @@
 class ENApi {
-  // Base URL
-  static const String apiUrl = "https://news-backend-api.onrender.com/api/";
+  // Base URLS
+  static const String prodBaseApiUrl = "https://news-backend-api.onrender.com/api/";
+  static const String debugBaseApiUrl = "http://192.168.29.98:8000/api/";
 
   // Login
   static const String login = "auth/login/"; // POST

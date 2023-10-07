@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend_app/constants/extension.dart';
 import 'package:frontend_app/controller/auth/password_reset_controller.dart';
 import 'package:frontend_app/views/widgets/common/custom_button.dart';
+import 'package:frontend_app/views/widgets/common/custom_loading_box.dart';
 import 'package:frontend_app/views/widgets/common/custom_text_field.dart';
 import 'package:get/get.dart';
 
@@ -12,6 +13,7 @@ class PasswordResetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final passwordResetController = Get.put(PasswordResetController());
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -28,47 +30,52 @@ class PasswordResetScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.only(left: 5.0.wp, right: 5.0.wp),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              Text(
-                "Forget Password",
-                style: TextStyle(
-                  fontSize: 20.0.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 1.0.hp),
-              const Text(
-                  "Don't worry sometimes people can forget too, enter your email and we will send you a password reset link"),
-              SizedBox(height: 3.0.hp),
-              CustomTextField(
-                controller: passwordResetController.eMailController,
-                obscureText: false,
-                readOnly: false,
-                keyboardType: TextInputType.emailAddress,
-                hintText: "E-mail",
-                prefixIcon:
-                    const Icon(FluentSystemIcons.ic_fluent_mail_read_regular),
-              ),
-              SizedBox(height: 2.0.hp),
-              CustomButton(
-                isOulined: false,
-                onPressed: () => passwordResetController.resetPassword(),
-                widget: Obx(() {
-                  if (passwordResetController.isLoading.value) {
-                    return const CircularProgressIndicator(color: Colors.white);
-                  } else {
-                    return Text(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Forget Password",
+                    style: TextStyle(
+                      fontSize: 20.0.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 1.0.hp),
+                  const Text(
+                      "Don't worry sometimes people can forget too, enter your email and we will send you a password reset link"),
+                  SizedBox(height: 3.0.hp),
+                  CustomTextField(
+                    controller: passwordResetController.eMailController,
+                    obscureText: false,
+                    readOnly: false,
+                    keyboardType: TextInputType.emailAddress,
+                    hintText: "E-mail",
+                    prefixIcon: const Icon(
+                        FluentSystemIcons.ic_fluent_mail_read_regular),
+                  ),
+                  SizedBox(height: 2.0.hp),
+                  CustomButton(
+                    isOulined: false,
+                    onPressed: () => passwordResetController.resetPassword(),
+                    widget: Text(
                       "Send".toUpperCase(),
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
-                    );
-                  }
-                }),
+                    ),
+                  ),
+                ],
               ),
+              Obx(() {
+                if (passwordResetController.isLoading.value) {
+                  return CustomLoadingBox(context: context);
+                } else {
+                  return const SizedBox.shrink();
+                }
+              }),
             ],
           ),
         ),
