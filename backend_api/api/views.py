@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.db.models import Q
 from rest_framework.decorators import api_view, permission_classes
@@ -10,70 +10,94 @@ from rest_framework.permissions import IsAuthenticated
 from core.models import User, Price, Subscription, Category, Article, Comment, LikeDislike, SavedArticle
 from .serializer import (
     UserSerializer, PriceSerializer, SubscriptionSerializer, CategorySerializer,
-    ArticleSerializer, CommentSerializer, LikeDislikeSerializer, SavedArticleSerializer, SendPasswordResetEmailSerializer, UpdatePasswordSerializer,
+    ArticleSerializer, CommentSerializer, LikeDislikeSerializer, SavedArticleSerializer, UserLoginSerializer,
+    UserRegistrationSerializer, UserLogoutSerializer, SendPasswordResetEmailSerializer, UpdatePasswordSerializer, 
 )
 from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from . utils import Util
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 # ----------------------------------------- AUTH -----------------------------------------
 
 
 # USER LOGIN
+@swagger_auto_schema(method='POST', request_body=UserLoginSerializer)
 @api_view(['POST'])
 def user_login(request):
-    username = request.data.get('username')
-    password = request.data.get('password')
+    serializer = UserLoginSerializer(data=request.data)
 
-    if not User.objects.filter(username=username).exists():
-        return Response({'message': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+    if serializer.is_valid():
+        username = serializer.validated_data['username']
+        password = serializer.validated_data['password']
 
-    user = authenticate(request, username=username, password=password)
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return Response({'message': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
 
-    if user is not None:
-        login(request, user)
-        refresh = RefreshToken.for_user(user)
-        access_token = str(refresh.access_token)
+        user = authenticate(request, username=username, password=password)
 
-        serializer = UserSerializer(user)
-        return Response({'message': 'Login successfully.', 'access_token': access_token, 'data': serializer.data, }, status=status.HTTP_200_OK)
-    else:
-        return Response({'message': 'Invalid username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+        if user is not None:
+            login(request, user)
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            refresh_token = str(refresh)
+            
+            token = {
+                'access_token': access_token,
+                'refresh_token': refresh_token,
+            }
+
+            user_serializer = UserSerializer(user)
+            return Response({'message': 'Login successfully.', 'tokens': token, 'data': user_serializer.data, }, status=status.HTTP_200_OK)
+        else:
+            return Response({'message': 'Invalid username or password.'}, status=status.HTTP_401_UNAUTHORIZED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # USER REGISTRATION
+@swagger_auto_schema(method='POST', request_body=UserRegistrationSerializer)
 @api_view(['POST'])
 def user_registration(request):
-    first_name = request.data.get('first_name')
-    last_name = request.data.get('last_name')
-    email = request.data.get('email')
-    phone_number = request.data.get('phone_number')
-    user_type = request.data.get('user_type')
-    profile_picture = request.data.get('profile_picture')
+    serializer = UserRegistrationSerializer(data=request.data)
 
-    username = request.data.get('username')
-    password = request.data.get('password')
+    if serializer.is_valid():
+        email = serializer.validated_data.get('email')
+        username = serializer.validated_data.get('username')
 
-    if User.objects.filter(email=email).exists() or User.objects.filter(username=username).exists():
-        return Response({'message': 'User with this email or username already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(Q(email=email) | Q(username=username)).exists():
+            return Response({'message': 'User with this email or username already exists.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    try:
-        user = User.objects.create_user(first_name=first_name, last_name=last_name, email=email, phone_number=phone_number,
-                                        user_type=user_type, profile_picture=profile_picture, username=username, password=password)
-        user.save()
-
+        user = serializer.save()
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
+        refresh_token = str(refresh)
+        
+        token = {
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+        }
 
-        serializer = UserSerializer(user)
+        user_serializer = UserSerializer(user)
 
-        return Response({'message': 'Registration successfully.', 'access_token': access_token, 'data': serializer.data, }, status=status.HTTP_201_CREATED)
-    except IntegrityError:
-        return Response({'message': 'Please fill all the fileds'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'message': 'Registration successfully.', 'tokens': token, 'data': user_serializer.data, }, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# USER LOGOUT
+@swagger_auto_schema(method='POST', request_body=UserLogoutSerializer)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def user_logout(request):
+    logout(request)
+    return Response({'message': 'Logged out successfully.'}, status=status.HTTP_200_OK)
 
 
 # USER PASSWORD RESET LINK
+@swagger_auto_schema(method='POST', request_body=SendPasswordResetEmailSerializer)
 @api_view(['POST'])
 def send_password_reset_email(request):
     serializer = SendPasswordResetEmailSerializer(data=request.data)
@@ -84,7 +108,7 @@ def send_password_reset_email(request):
             user = User.objects.get(email=email)
             uid = urlsafe_base64_encode(force_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
-            link = 'https://news-backend-api.onrender.com/api/user/reset/'+uid+'/'+token
+            link = 'https://news-backend-api.onrender.com/api/auth/update-user-password/'+uid+'/'+token
 
             body = "Click on the link : "+link
             data = {
@@ -102,6 +126,7 @@ def send_password_reset_email(request):
 
 
 # USER PASSWORD RESET
+@swagger_auto_schema(method='POST', request_body=UpdatePasswordSerializer)
 @api_view(['POST'])
 def update_user_password(request, uid, token):
     try:
@@ -161,6 +186,7 @@ def user_details(request, user_id):
 
 
 # CREATE USER
+@swagger_auto_schema(method='POST', request_body=UserSerializer)
 @api_view(['POST'])
 def create_user(request):
     serializer = UserSerializer(data=request.data)
@@ -171,6 +197,7 @@ def create_user(request):
 
 
 # UPDATE USER
+@swagger_auto_schema(method='PUT', request_body=UserSerializer)
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_user(request, user_id):
@@ -208,6 +235,7 @@ def get_price_or_404(price_id):
 
 # PRICE LIST
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def price_list(request):
     prices = Price.objects.all()
     serializer = PriceSerializer(prices, many=True)
@@ -227,6 +255,7 @@ def price_details(request, price_id):
 
 
 # CREATE PRICE
+@swagger_auto_schema(method='POST', request_body=PriceSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_price(request):
@@ -238,6 +267,7 @@ def create_price(request):
 
 
 # UPDATE PRICE
+@swagger_auto_schema(method='PUT', request_body=PriceSerializer)
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_price(request, price_id):
@@ -296,6 +326,7 @@ def subscription_details(request, subscription_id):
 
 
 # CREATE SUBSCRIPTION
+@swagger_auto_schema(method='POST', request_body=SubscriptionSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_subscription(request):
@@ -307,6 +338,7 @@ def create_subscription(request):
 
 
 # UPDATE SUBSCRIPTION
+@swagger_auto_schema(method='PUT', request_body=SubscriptionSerializer)
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_subscription(request, subscription_id):
@@ -345,6 +377,7 @@ def get_category_or_404(category_id):
 
 # CATEGORY LIST
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def category_list(request):
     categories = Category.objects.all()
     serializer = CategorySerializer(
@@ -354,6 +387,7 @@ def category_list(request):
 
 # CATEGORY DETAILS
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def category_details(request, category_id):
     category = get_category_or_404(category_id)
     if category is None:
@@ -364,6 +398,7 @@ def category_details(request, category_id):
 
 
 # CREATE CATEGORY
+@swagger_auto_schema(method='POST', request_body=CategorySerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_category(request):
@@ -375,6 +410,7 @@ def create_category(request):
 
 
 # UPDATE CATEGORY
+@swagger_auto_schema(method='PUT', request_body=CategorySerializer)
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_category(request, category_id):
@@ -419,6 +455,7 @@ class ArticlePagination(PageNumberPagination):
 
 # ARTICLE LIST
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def article_list(request):
     articles = Article.objects.all()
     paginator = ArticlePagination()
@@ -430,6 +467,7 @@ def article_list(request):
 
 # ARTICLE DETAILS
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def article_details(request, article_id):
     article = get_article_or_404(article_id)
     if article is None:
@@ -440,6 +478,7 @@ def article_details(request, article_id):
 
 
 # CREATE ARTICLE
+@swagger_auto_schema(method='POST', request_body=ArticleSerializer)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_article(request):
@@ -451,6 +490,7 @@ def create_article(request):
 
 
 # UPDATE ARTICLE
+@swagger_auto_schema(method='PUT', request_body=ArticleSerializer)
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_article(request, article_id):
@@ -479,6 +519,7 @@ def delete_article(request, article_id):
 
 # ARTICLE VIEWS INCREMENT
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def article_views_increment(request, article_id):
     article = get_article_or_404(article_id)
     if article is None:
@@ -492,7 +533,19 @@ def article_views_increment(request, article_id):
 
 
 # SEARCH ARTICLE
+@swagger_auto_schema(
+    method='GET',
+    manual_parameters=[
+        openapi.Parameter(
+            name='query',
+            in_=openapi.IN_QUERY,
+            description='Search query string',
+            type=openapi.TYPE_STRING,
+        ),
+    ],
+)
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def search_article(request):
     query = request.query_params.get('query', '')
 
@@ -517,6 +570,7 @@ def get_comment_or_404(comment_id, article_id):
 
 # COMMENT LIST FOR SPECIFIC ARTICLE
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def comment_list(request, article_id):
     comments = Comment.objects.filter(article=article_id)
     serializer = CommentSerializer(comments, many=True)
@@ -566,6 +620,7 @@ def delete_comment(request, article_id, comment_id):
 
 # LIKE OR DISLIKE GET THE TOTAL COUNT OF LIKES AND DISLIKES FROM A SPECIFIC ARTICLE
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def like_or_dislike_count(request, article_id):
     likes = LikeDislike.objects.filter(
         article=article_id, is_like=True).count()
@@ -576,6 +631,7 @@ def like_or_dislike_count(request, article_id):
 
 # UPDATE LIKE OR DISLIKE OF AN ARTICLE
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_like_or_dislike(request, article_id):
     user = request.user
     like_dislike, created = LikeDislike.objects.get_or_create(
@@ -591,16 +647,42 @@ def update_like_or_dislike(request, article_id):
 
 
 # LIST SAVED ARTICLE LIST BY USER
+@swagger_auto_schema(
+    method='GET',
+    manual_parameters=[
+        openapi.Parameter(
+            name='user',
+            in_=openapi.IN_QUERY,
+            description='User ID to filter saved articles',
+            type=openapi.TYPE_INTEGER,
+        ),
+        openapi.Parameter(
+            name='saved_article_id',
+            in_=openapi.IN_QUERY,
+            description='Saved Article ID to filter saved articles',
+            type=openapi.TYPE_INTEGER,
+        ),
+    ],
+)
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def list_saved_articles(request):
-    user = request.user
+    user = request.query_params.get('user', request.user.id)
+    saved_article = request.query_params.get('saved_article', None)
+
     saved_articles = SavedArticle.objects.filter(user=user)
+
+    if saved_article is not None:
+        saved_articles = saved_articles.filter(id=saved_article)
+
     serializer = SavedArticleSerializer(saved_articles, many=True)
     return Response({'message': 'List retrived successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
 
 
 # CREATE SAVED ARTICLES
+@swagger_auto_schema(method='POST', request_body=SavedArticleSerializer)
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def create_saved_articles(request, article_id):
     user = request.user
     if SavedArticle.objects.filter(user=user, article=article_id).exists():
@@ -612,7 +694,8 @@ def create_saved_articles(request, article_id):
 
 
 # DELETE SAVED ARTICLES
-@api_view(['POST'])
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_saved_articles(request, article_id):
     user = request.user
     try:

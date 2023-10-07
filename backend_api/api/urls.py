@@ -1,12 +1,20 @@
 from django.urls import path, include
 from . import views
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 # AUTH
 auth_patterns = [
     path('login/', views.user_login, name='auth-login'),
     path('registration/', views.user_registration, name='auth-registration'),
-    path('reset-password-link/', views.send_password_reset_email, name='auth-reset-password-link'),
-    path('update-user-password/<uid>/<token>/', views.update_user_password, name='auth-update-user-password'),
+    path('logout/', views.user_logout, name='auth-logout'),
+    path('reset-password-link/', views.send_password_reset_email,
+         name='auth-reset-password-link'),
+    path('update-user-password/<uid>/<token>/',
+         views.update_user_password, name='auth-update-user-password'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
 
 # USER
@@ -82,6 +90,7 @@ like_dislike_patterns = [
 
 # SAVED ARTICLE
 saved_articles_patterns = [
+    path('', views.list_saved_articles, name='list-saved-articles'),
     path('<int:article_id>/', views.create_saved_articles,
          name='create-saved-article'),
     path('delete/<int:article_id>/', views.delete_saved_articles,
